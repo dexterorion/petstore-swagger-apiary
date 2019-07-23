@@ -1,80 +1,1844 @@
-FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
-
-# dine-in
-
-Polls 2 is a simple API allowing consumers to view polls and vote in them.
-
-## Questions Collection [/questions]
-
-### List All Questions [GET]
-
-+ Response 200 (application/json)
-
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "The purpose of this microservice is to handle kitchen / runner requests\n\nSwagger json genereated using https://goswagger.io/generate/spec.html\nswagger generate spec -m -o swagger.json",
+    "title": "Rockspoon Kitchen Display Microservice",
+    "version": "0.0.1"
+  },
+  "basePath": "/",
+  "paths": {
+    "/item-routing": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenRoutingBackoffice"
+        ],
+        "summary": "Gets routings settings per item.",
+        "operationId": "getKitchenItemsRoutingsHandler",
+        "responses": {
+          "200": {
+            "description": "Routings list per item",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemStationsRequest"
+              }
             }
-        ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
-+ Request (application/json)
-
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+          }
         }
-
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
-
-    + Body
-
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenRoutingBackoffice"
+        ],
+        "summary": "Updates items routings settings.",
+        "operationId": "updateKitchenItemsRoutingsHandler",
+        "parameters": [
+          {
+            "description": "items routing settings",
+            "name": "ItemsRoutingsUpdateBodyRequest",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemsRoutingsUpdateBodyRequest"
+              }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Routings list per item",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemStationsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/configuration": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDeviceConfiguration"
+        ],
+        "summary": "Gets kitchen configuration for specific device.",
+        "operationId": "getKitchenConfigurationHandler",
+        "responses": {
+          "200": {
+            "description": "Kitchen configuration response",
+            "schema": {
+              "$ref": "#/definitions/KitchenConfigurationRequest"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDeviceConfiguration"
+        ],
+        "summary": "Updates kitchen configuration for specific device.",
+        "operationId": "createKitchenConfigurationHandler",
+        "parameters": [
+          {
+            "name": "KitchenConfigurationRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/KitchenConfigurationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kitchen configuration response",
+            "schema": {
+              "$ref": "#/definitions/KitchenConfigurationRequest"
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/finished": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Gets finished cards.",
+        "operationId": "getFinishedItemsFiredHandler",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "productionStationId",
+            "name": "productionStationId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items runner history",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemFiredRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/history": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Gets cards history.",
+        "operationId": "getKitchenItemsFiredHistoryHandler",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "productionStationId",
+            "name": "productionStationId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fired items",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemHistoryResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/history/move-to-orders": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Moves card to ready on runner screen.",
+        "operationId": "moveToOrdersItemFiredHandler",
+        "parameters": [
+          {
+            "description": "ItemInstanceProductionStationRequest",
+            "name": "ItemInstanceProductionStationRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ItemInstanceProductionStationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items fired cards",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemsFiredOutputRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/run": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenRunner"
+        ],
+        "summary": "Run cards on runner screen.",
+        "operationId": "runKitchenItemsFiredHandler",
+        "parameters": [
+          {
+            "description": "ItemsFiredRunBodyRequest",
+            "name": "ItemsFiredRunBodyRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ItemsFiredRunBodyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items fired card",
+            "schema": {
+              "$ref": "#/definitions/ItemsFiredOutputRequest"
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/unfinished": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Gets unfinished cards.",
+        "operationId": "getUnfinishedItemsFiredHandler",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "productionStationId",
+            "name": "productionStationId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fired items",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ItemFiredRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/items-fired/update": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Updates item on kitchen.",
+        "operationId": "updateItemsFiredHandler",
+        "parameters": [
+          {
+            "description": "ItemsFiredUpdateBodyRequest",
+            "name": "ItemsFiredUpdateBodyRequest",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ItemsFiredUpdateBodyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items fired card",
+            "schema": {
+              "$ref": "#/definitions/ItemsFiredOutputRequest"
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/non-fired-items": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Gets non fired cards.",
+        "operationId": "getKichenNotFiredItemsHandler",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "productionStationId",
+            "name": "productionStationId",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Non fired items",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NonFiredItemRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/runner/history": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenRunner"
+        ],
+        "summary": "Gets runner history.",
+        "operationId": "kitchenRunnerHistoryHandler",
+        "responses": {
+          "200": {
+            "description": "Items runner history",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/KitchenRunnerHistoryRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kitchen/runner/history/move-to-ready": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenRunner"
+        ],
+        "summary": "Moves card to ready on runner screen.",
+        "operationId": "kitchenRunnerHistoryMoveToReadyHandler",
+        "parameters": [
+          {
+            "description": "itemInstanceId",
+            "name": "itemInstanceId",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RunnerBodyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All ok"
+          }
+        }
+      }
+    },
+    "/kitchen/show-screen-sequence": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Show screen sequence to other devices.",
+        "operationId": "kitchenShowScreenSequenceHandler",
+        "responses": {
+          "200": {
+            "description": "All ok"
+          }
+        }
+      }
+    },
+    "/kitchen/{deviceId}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Delete device from kitchen.",
+        "operationId": "kitchenDeleteDeviceFromKitchenHandler",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Device id",
+            "name": "deviceId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All ok"
+          }
+        }
+      }
+    },
+    "/ordering/prepped-food": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "KitchenDevice"
+        ],
+        "summary": "Gets prepped food cards.",
+        "operationId": "getKitchenPreppedFoodCardsHandler",
+        "responses": {
+          "200": {
+            "description": "Prepped food cards",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/OrderingPreppedFoodCardRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Action": {
+      "type": "object",
+      "title": "Action represent a action possible.",
+      "properties": {
+        "image": {
+          "type": "string",
+          "x-go-name": "Image"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "x-go-name": "IsDefault"
+        },
+        "statusId": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Alert": {
+      "type": "object",
+      "title": "Alert informe all info to create an alert.",
+      "properties": {
+        "beepOnArrival": {
+          "type": "boolean",
+          "x-go-name": "BeepOnArrival"
+        },
+        "isEnable": {
+          "type": "boolean",
+          "x-go-name": "IsEnable"
+        },
+        "minutesUntilLongBeep": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "MinutesUntilLongBeep"
+        },
+        "textColorAfterLongBeep": {
+          "type": "string",
+          "x-go-name": "TextColorAfterLongBeep"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Card": {
+      "type": "object",
+      "title": "Card hold general info of the order and list of items been ordering.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DeletedAt"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          },
+          "x-go-name": "Items"
+        },
+        "kitchens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Kitchen"
+          },
+          "x-go-name": "Kitchens"
+        },
+        "orderMeta": {
+          "$ref": "#/definitions/OrderMeta"
+        },
+        "schema": {
+          "type": "string",
+          "x-go-name": "Schema"
+        },
+        "venueId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "CardType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Column": {
+      "type": "object",
+      "title": "Column informe all info to create a column.",
+      "properties": {
+        "alert": {
+          "$ref": "#/definitions/Alert"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Index"
+        },
+        "slots": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Slots"
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StatusHolder"
+          },
+          "x-go-name": "Statuses"
+        },
+        "title": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MLText"
+          },
+          "x-go-name": "Title"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Configuration": {
+      "type": "object",
+      "title": "Configuration represent the kitchen configuration a device will subscribe.",
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Column"
+          },
+          "x-go-name": "Columns"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DeletedAt"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "meta": {
+          "$ref": "#/definitions/Meta"
+        },
+        "preference": {
+          "$ref": "#/definitions/Preference"
+        },
+        "schema": {
+          "type": "string",
+          "x-go-name": "Schema"
+        },
+        "venueId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "title": {
+          "type": "string",
+          "x-go-name": "Title"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Diner": {
+      "type": "object",
+      "title": "Diner represent the user seat.",
+      "properties": {
+        "dinerId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "seat": {
+          "type": "string",
+          "x-go-name": "Seat"
+        },
+        "userId": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Font": {
+      "type": "object",
+      "title": "Font represent the font the device will use.",
+      "properties": {
+        "default": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Default"
+        },
+        "defaultLarge": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "DefaultLarge"
+        },
+        "large": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Large"
+        },
+        "medium": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Medium"
+        },
+        "small": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Small"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "FontRequest": {
+      "type": "object",
+      "title": "FontRequest represents the font request.",
+      "properties": {
+        "default": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Default"
+        },
+        "defaultLarge": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "DefaultLarge"
+        },
+        "large": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Large"
+        },
+        "medium": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Medium"
+        },
+        "small": {
+          "type": "integer",
+          "format": "int8",
+          "x-go-name": "Small"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "Item": {
+      "type": "object",
+      "title": "Item hold all info of item.",
+      "properties": {
+        "orderItemMeta": {
+          "$ref": "#/definitions/OrderItemMeta"
+        },
+        "title": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MLText"
+          },
+          "x-go-name": "Title"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "ItemFiredFinishedResponse": {
+      "type": "object",
+      "title": "ItemFiredFinishedResponse represents the item fired finished response.",
+      "properties": {
+        "diningPartyId": {
+          "type": "string",
+          "x-go-name": "DiningPartyID"
+        },
+        "diningPartyType": {
+          "type": "string",
+          "x-go-name": "DiningPartyType"
+        },
+        "firedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "FiredAt"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "itemsInstances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemInstanceResponse"
+          },
+          "x-go-name": "ItemsInstances"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemFiredHistory": {
+      "type": "object",
+      "title": "ItemFiredHistory keeps info on a specific fired item history.",
+      "properties": {
+        "guest": {
+          "type": "string",
+          "x-go-name": "Guest"
+        },
+        "itemInstanceId": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ItemInstanceID"
+        },
+        "orderDetail": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "OrderDetail"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        },
+        "waiters": {
+          "type": "string",
+          "x-go-name": "Waiter"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemFiredRequest": {
+      "type": "object",
+      "title": "ItemFiredRequest represents the item fired request.",
+      "properties": {
+        "diningPartyId": {
+          "type": "string",
+          "x-go-name": "DiningPartyID"
+        },
+        "diningPartyType": {
+          "type": "string",
+          "x-go-name": "DiningPartyType"
+        },
+        "firedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "FiredAt"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "itemsInstances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemInstanceRequest"
+          },
+          "x-go-name": "ItemsInstances"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemHistoryResponse": {
+      "type": "object",
+      "title": "ItemHistoryResponse represents the item history response.",
+      "properties": {
+        "dateTime": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "DateTime"
+        },
+        "guest": {
+          "type": "string",
+          "x-go-name": "Guest"
+        },
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "orderDetails": {
+          "type": "string",
+          "x-go-name": "OrderDetail"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        },
+        "waiter": {
+          "type": "string",
+          "x-go-name": "Waiter"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemInstanceProductionStationRequest": {
+      "type": "object",
+      "title": "ItemInstanceProductionStationRequest represents item instance production station request.",
+      "properties": {
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "productionStationId": {
+          "type": "string",
+          "x-go-name": "ProductionStationID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemInstanceRequest": {
+      "type": "object",
+      "title": "ItemInstanceRequest represents the item instance request.",
+      "properties": {
+        "addon": {
+          "type": "boolean",
+          "x-go-name": "Addon"
+        },
+        "course": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Course"
+        },
+        "itemId": {
+          "type": "string",
+          "x-go-name": "ItemID"
+        },
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "modifiersDescription": {
+          "type": "string",
+          "x-go-name": "ModifiersDescription"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "seatName": {
+          "type": "string",
+          "x-go-name": "SeatName"
+        },
+        "shareType": {
+          "type": "string",
+          "x-go-name": "ShareType"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemInstanceResponse": {
+      "type": "object",
+      "title": "ItemInstanceResponse represents the item instance response.",
+      "properties": {
+        "addon": {
+          "type": "boolean",
+          "x-go-name": "Addon"
+        },
+        "course": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Course"
+        },
+        "itemId": {
+          "type": "string",
+          "x-go-name": "ItemID"
+        },
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "modifiersDescription": {
+          "type": "string",
+          "x-go-name": "ModifiersDescription"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "seatName": {
+          "type": "string",
+          "x-go-name": "SeatName"
+        },
+        "shareType": {
+          "type": "string",
+          "x-go-name": "ShareType"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemMeta": {
+      "type": "object",
+      "title": "ItemMeta hold all info of the item.",
+      "properties": {
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "itemId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "menuCategoryItemId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "missing_integrediants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "MissingIntegrediants"
+        },
+        "subtitution": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Subtitution"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "ItemModifierDescriptionRequest": {
+      "type": "object",
+      "title": "ItemModifierDescriptionRequest represents the item modifier description request.",
+      "properties": {
+        "modifiersDescription": {
+          "type": "string",
+          "x-go-name": "ModifiersDescription"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemStationStatusRequest": {
+      "type": "object",
+      "title": "ItemStationStatusRequest represents the item station status.",
+      "properties": {
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemStationStatusResponse": {
+      "type": "object",
+      "title": "ItemStationStatusResponse represents the item station status.",
+      "properties": {
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemStationsRequest": {
+      "type": "object",
+      "title": "ItemStationsRequest represents the item stations request.",
+      "properties": {
+        "category": {
+          "type": "string",
+          "x-go-name": "Category"
+        },
+        "item": {
+          "type": "string",
+          "x-go-name": "Item"
+        },
+        "itemId": {
+          "type": "string",
+          "x-go-name": "ItemID"
+        },
+        "menu": {
+          "type": "string",
+          "x-go-name": "Menu"
+        },
+        "stationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "StationIDs"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemsFiredFinishedResponse": {
+      "type": "object",
+      "title": "ItemsFiredFinishedResponse represents the response to the items fired finished.",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemStationStatusResponse"
+          },
+          "x-go-name": "Items"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemsFiredOutputRequest": {
+      "type": "object",
+      "title": "ItemsFiredOutputRequest represents the response to the items fired update.",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemStationStatusRequest"
+          },
+          "x-go-name": "Items"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemsFiredRunBodyRequest": {
+      "type": "object",
+      "title": "ItemsFiredRunBodyRequest represents the request body to the items fired run.",
+      "properties": {
+        "itemInstanceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "ItemInstanceIDs"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "newStatus": {
+          "$ref": "#/definitions/OrderStatus"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemsFiredUpdateBodyRequest": {
+      "type": "object",
+      "title": "ItemsFiredUpdateBodyRequest represents the request body to the items fired update.",
+      "properties": {
+        "itemInstanceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "ItemInstanceIDs"
+        },
+        "itemsFiredId": {
+          "type": "string",
+          "x-go-name": "ItemsFiredID"
+        },
+        "newStatus": {
+          "$ref": "#/definitions/OrderStatus"
+        },
+        "stationId": {
+          "type": "string",
+          "x-go-name": "StationID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ItemsRoutingsUpdateBodyRequest": {
+      "type": "object",
+      "title": "ItemsRoutingsUpdateBodyRequest represents the request body to the items routings update.",
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "x-go-name": "ItemID"
+        },
+        "stationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "StationIDs"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "Kitchen": {
+      "type": "object",
+      "title": "Kitchen inform which group of Kitchen hold which orders.",
+      "properties": {
+        "kitchenId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Order"
+          },
+          "x-go-name": "Orders"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "KitchenConfigurationRequest": {
+      "type": "object",
+      "title": "KitchenConfigurationRequest represents the kitchen configuration request.",
+      "properties": {
+        "enableSound": {
+          "type": "boolean",
+          "x-go-name": "EnableSound"
+        },
+        "extendedDevices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KitchenExtensionRequest"
+          },
+          "x-go-name": "ExtendedDevices"
+        },
+        "extensionIndex": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ExtensionIndex"
+        },
+        "font": {
+          "$ref": "#/definitions/FontRequest"
+        },
+        "highlightSimilarItems": {
+          "type": "boolean",
+          "x-go-name": "HighlightSimilarItems"
+        },
+        "numberOfColumns": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "NumberOfColumns"
+        },
+        "showReadyOrders": {
+          "type": "boolean",
+          "x-go-name": "ShowReadyOrders"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "KitchenExtensionRequest": {
+      "type": "object",
+      "title": "KitchenExtensionRequest represents the kitchen extension request.",
+      "properties": {
+        "batteryLevel": {
+          "type": "string",
+          "x-go-name": "BatteryLevel"
+        },
+        "deviceId": {
+          "type": "string",
+          "x-go-name": "DeviceID"
+        },
+        "imei": {
+          "type": "string",
+          "x-go-name": "Imei"
+        },
+        "index": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Index"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "numberOfColumns": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "NumberOfColumns"
+        },
+        "wifiNetwork": {
+          "type": "string",
+          "x-go-name": "WifiNetwork"
+        },
+        "wirelessSignal": {
+          "type": "string",
+          "x-go-name": "WirelessSignal"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "KitchenRunnerHistoryRequest": {
+      "type": "object",
+      "title": "KitchenRunnerHistoryRequest represents the kitchen runner history request.",
+      "properties": {
+        "dateTime": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "DateTime"
+        },
+        "guest": {
+          "type": "string",
+          "x-go-name": "Guest"
+        },
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "orderDetails": {
+          "type": "string",
+          "x-go-name": "OrderDetail"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        },
+        "waiter": {
+          "type": "string",
+          "x-go-name": "Waiter"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "MLText": {
+      "type": "object",
+      "title": "MLText represents the item title.",
+      "properties": {
+        "language": {
+          "type": "string",
+          "x-go-name": "Language"
+        },
+        "value": {
+          "type": "string",
+          "x-go-name": "Value"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Meta": {
+      "type": "object",
+      "title": "Meta all meta of kitchen configuration.",
+      "properties": {
+        "routingDevice": {
+          "x-go-name": "RoutingDevice"
+        },
+        "routingItem": {
+          "x-go-name": "RoutingItem"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "NonFiredItemRequest": {
+      "type": "object",
+      "title": "NonFiredItemRequest represents the non fired item request.",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ItemModifierDescriptionRequest"
+          },
+          "x-go-name": "Items"
+        },
+        "tableName": {
+          "type": "string",
+          "x-go-name": "TableName"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ObjectID": {
+      "type": "array",
+      "title": "ObjectID is the BSON ObjectID type.",
+      "items": {
+        "type": "integer",
+        "format": "uint8"
+      },
+      "x-go-package": "go.mongodb.org/mongo-driver/bson/primitive"
+    },
+    "Order": {
+      "type": "object",
+      "title": "Order inform the status of an item.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "deviceId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "orderId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "status": {
+          "$ref": "#/definitions/OrderStatus"
+        },
+        "statusId": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "OrderItemMeta": {
+      "type": "object",
+      "title": "OrderItemMeta hold all info of the order item.",
+      "properties": {
+        "course": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Course"
+        },
+        "diner": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Diner"
+          },
+          "x-go-name": "Diner"
+        },
+        "itemMeta": {
+          "$ref": "#/definitions/ItemMeta"
+        },
+        "orderId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "serving": {
+          "$ref": "#/definitions/Serving"
+        },
+        "statuses": {
+          "x-go-name": "Statuses"
+        },
+        "waiterId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "waiterName": {
+          "type": "string",
+          "x-go-name": "WaiterName"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "OrderMeta": {
+      "type": "object",
+      "title": "OrderMeta hold general info of the order.",
+      "properties": {
+        "dineInPartyID": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "firedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "FiredAt"
+        },
+        "orderType": {
+          "$ref": "#/definitions/OrderType"
+        },
+        "tableNumber": {
+          "type": "string",
+          "x-go-name": "TableNumber"
+        },
+        "tableType": {
+          "$ref": "#/definitions/TableType"
+        },
+        "todoAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "TodoAt"
+        },
+        "type": {
+          "$ref": "#/definitions/CardType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "OrderStatus": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "OrderType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "OrderingPreppedFoodCardRequest": {
+      "type": "object",
+      "title": "OrderingPreppedFoodCardRequest represents the ordering prepped food card request.",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PreppedFoodOrderRequest"
+          },
+          "x-go-name": "Orders"
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Timestamp"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "Preference": {
+      "type": "object",
+      "title": "Preference represent configuration of kitchen.",
+      "properties": {
+        "enableSound": {
+          "type": "boolean",
+          "x-go-name": "EnableSound"
+        },
+        "font": {
+          "$ref": "#/definitions/Font"
+        },
+        "highlightSimilarItems": {
+          "type": "boolean",
+          "x-go-name": "HighlightSimilarItems"
+        },
+        "workflowId": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "PreppedFoodOrderRequest": {
+      "type": "object",
+      "title": "PreppedFoodOrderRequest represents the prepped food order request.",
+      "properties": {
+        "inventoryItemId": {
+          "type": "string",
+          "x-go-name": "InventoryItemID"
+        },
+        "itemId": {
+          "type": "string",
+          "x-go-name": "ItemID"
+        },
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        },
+        "modifierDescription": {
+          "type": "string",
+          "x-go-name": "ModifierDescription"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "quantity": {
+          "type": "string",
+          "x-go-name": "Quantity"
+        },
+        "stationNames": {
+          "type": "string",
+          "x-go-name": "StationNames"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "unit": {
+          "type": "string",
+          "x-go-name": "Unit"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "ProductionAreaStationFiredItemRequest": {
+      "type": "object",
+      "title": "ProductionAreaStationFiredItemRequest represents the production area station fired item request.",
+      "properties": {
+        "stationId": {
+          "type": "string",
+          "x-go-name": "StationID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "RunnerBodyRequest": {
+      "type": "object",
+      "title": "RunnerBodyRequest represents the runner body request.",
+      "properties": {
+        "itemInstanceId": {
+          "type": "string",
+          "x-go-name": "ItemInstanceID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "Serving": {
+      "type": "object",
+      "title": "Serving represent the serving type.",
+      "properties": {
+        "plateNumbers": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "PlateNumbers"
+        },
+        "type": {
+          "$ref": "#/definitions/ServingType"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "ServingType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "StationStatusRequest": {
+      "type": "object",
+      "title": "StationStatusRequest represents the station item status request.",
+      "properties": {
+        "stationId": {
+          "type": "string",
+          "x-go-name": "StationID"
+        },
+        "status": {
+          "type": "string",
+          "x-go-name": "Status"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-ms/transformation/model"
+    },
+    "Status": {
+      "type": "object",
+      "title": "Status represent a state of an order and all actions associate in it.",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          },
+          "x-go-name": "Actions"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "name": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MLText"
+          },
+          "x-go-name": "Name"
+        },
+        "triggers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Trigger"
+          },
+          "x-go-name": "Triggers"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "StatusHolder": {
+      "type": "object",
+      "title": "StatusHolder enable the posibility to set a statusID with an Alert.",
+      "properties": {
+        "alert": {
+          "$ref": "#/definitions/Alert"
+        },
+        "statusId": {
+          "type": "string",
+          "x-go-name": "StatusID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "TableType": {
+      "type": "string",
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "Trigger": {
+      "type": "object",
+      "title": "Trigger represent a action will be done to update a status.",
+      "properties": {
+        "event": {
+          "type": "string",
+          "x-go-name": "Event"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    },
+    "UpdateCard": {
+      "description": "UpdateCard is an alias to scope Card for update actions",
+      "$ref": "#/definitions/Card"
+    },
+    "UpdateConfiguration": {
+      "description": "UpdateConfiguration is an alias to scope Configuration for update action",
+      "$ref": "#/definitions/Configuration"
+    },
+    "UpdateWorkflow": {
+      "description": "UpdateWorkflow is an alias to scope Workflow for update action",
+      "$ref": "#/definitions/Workflow"
+    },
+    "Workflow": {
+      "type": "object",
+      "title": "Workflow represent the flow of an order into a kitchen screen.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "CreatedAt"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "DeletedAt"
+        },
+        "description": {
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "id": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "schema": {
+          "type": "string",
+          "x-go-name": "Schema"
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Status"
+          },
+          "x-go-name": "Statuses"
+        },
+        "venueId": {
+          "$ref": "#/definitions/ObjectID"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "UpdatedAt"
+        },
+        "version": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Version"
+        }
+      },
+      "x-go-package": "github.com/rockspoon/rs.com.kitchen-display-model/model"
+    }
+  }
+}
